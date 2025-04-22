@@ -32,8 +32,9 @@ spark.sql("DELETE FROM my_table WHERE id = 2")
 
 # COMMAND ----------
 
-# Get the changes since the specified version
-changes_df = spark.read.format("delta").option("readChangeData", "true").option("startingVersion", 1).table("my_table")
+changes_df = spark.read.format("delta") \
+    .option("readChangeFeed", "true") \
+    .option("startingVersion", 0) \
+    .table("milliman_data_lake.db_bronze.medical_claims")
 
-# Show the changes
 display(changes_df)

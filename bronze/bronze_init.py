@@ -25,7 +25,7 @@ spark.sql(f"""
         , file_path STRING
         , file_name STRING
         , xml_string STRING
-        , created_at TIMESTAMP NOT NULL
+        , created_at TIMESTAMP
     ) 
     USING DELTA
     TBLPROPERTIES (delta.enableChangeDataFeed = true)
@@ -209,7 +209,7 @@ spark.sql(f"""
         , Specialty_Quality_Indicator STRING
         , Year STRING
         , part STRING
-        , created_at TIMESTAMP NOT NULL
+        , created_at TIMESTAMP
     )
     USING DELTA
     TBLPROPERTIES (delta.enableChangeDataFeed = true)
@@ -291,7 +291,7 @@ spark.sql(f"""
         , Specialty_Quality_Indicator STRING
         , Year STRING
         , part STRING
-        , created_at TIMESTAMP NOT NULL
+        , created_at TIMESTAMP
     )
     USING DELTA
     TBLPROPERTIES (delta.enableChangeDataFeed = true)

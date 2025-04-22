@@ -17,6 +17,7 @@
 # MAGIC     3. Storing the file path in the table and reading the data at run-time.
 # MAGIC 2. .option("maxFilesPerTrigger", max_files_per_trigger) and batch processing
 # MAGIC 3. partitionBy
+# MAGIC 4. watermarks
 
 # COMMAND ----------
 
@@ -64,12 +65,8 @@ df_ccda_stream.writeStream \
 
 # DBTITLE 1,Preview Data - DELETE
 df = spark.sql(f"""
-  select 
-    * except(xml_string)
-    , substring(xml_string, 1, 1000) as xml_string_preview
-    , length(xml_string) as xml_string_length 
+  select count(distinct document_id), count(*), count(distinct patient_id)
   from {catalog}.{database}.{table}
-  order by length(xml_string) desc
 """)
 
 display(df) #187
