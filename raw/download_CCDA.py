@@ -48,29 +48,33 @@ def download_file(url, save_path, file_name):
         # For expediency, simply process to the next download
         pass
 
+# Implemented so this notebook can be added to workflow without failing
+if False:
+    # Source file variables
+    url_source_file_path = ".\SeniorDEAssessment_20250414\Assessment\\"
+    url_source_file_name = "ccda_pre_signed_urls.csv"
+    url_source_full_path = ''.join([url_source_file_path,url_source_file_name])
 
-# Source file variables
-url_source_file_path = ".\SeniorDEAssessment_20250414\Assessment\\"
-url_source_file_name = "ccda_pre_signed_urls.csv"
-url_source_full_path = ''.join([url_source_file_path,url_source_file_name])
+    # Save in the Downloads folder in the current directory
+    save_directory = ".\Downloads" 
 
-# Save in the Downloads folder in the current directory
-save_directory = ".\Downloads" 
+    # Read source file
+    df_urls = pd.read_csv(url_source_full_path)
 
-# Read source file
-df_urls = pd.read_csv(url_source_full_path)
+    # Parse source file URL into components to easily extract important values: patient_id and file_name
+    df_urls['parsed'] = (df_urls['pre_signed_urls'].apply(lambda x: (parse.urlparse(x)).path)).str.split('/')
 
-# Parse source file URL into components to easily extract important values: patient_id and file_name
-df_urls['parsed'] = (df_urls['pre_signed_urls'].apply(lambda x: (parse.urlparse(x)).path)).str.split('/')
+    # Header segments for parsed URL
+    header_list = ['empty','folder1','folder2','patient_id','file_name']
 
-# Header segments for parsed URL
-header_list = ['empty','folder1','folder2','patient_id','file_name']
+    # Extract header segments into separate columns
+    df_urls[header_list] = df_urls['parsed'].apply(pd.Series)
 
-# Extract header segments into separate columns
-df_urls[header_list] = df_urls['parsed'].apply(pd.Series)
+    # Drop unecessary columns
+    df_urls.drop(columns=['parsed','empty','folder1','folder2'], inplace=True)    
 
-# Drop unecessary columns
-df_urls.drop(columns=['parsed','empty','folder1','folder2'], inplace=True)    
+    # Download files
+    df_urls.apply(lambda x: download_file(x.pre_signed_urls, os.path.join(save_directory, x.patient_id), x.file_name), axis=1)
 
-# Download files
-df_urls.apply(lambda x: download_file(x.pre_signed_urls, os.path.join(save_directory, x.patient_id), x.file_name), axis=1)
+else:
+    pass

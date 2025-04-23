@@ -296,12 +296,3 @@ spark.sql(f"""
     USING DELTA
     TBLPROPERTIES (delta.enableChangeDataFeed = true)
 """)
-
-# COMMAND ----------
-
-# DBTITLE 1,For Testing Purposes - DELETE
-# spark.sql(f"drop table if exists {catalog}.{db_bronze}.{tbl_bronze_ccda}")
-
-# spark.sql(f"drop database if exists {catalog}.{db_bronze}")
-
-# spark.sql(f"TRUNCATE TABLE {catalog}.{db_bronze}.{tbl_bronze_ccda}")

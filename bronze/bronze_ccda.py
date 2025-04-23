@@ -60,13 +60,3 @@ df_ccda_stream.writeStream \
     .outputMode("append") \
     .trigger(once=True) \
     .table(f"{catalog}.{database}.{table}")
-
-# COMMAND ----------
-
-# DBTITLE 1,Preview Data - DELETE
-df = spark.sql(f"""
-  select count(distinct document_id), count(*), count(distinct patient_id)
-  from {catalog}.{database}.{table}
-""")
-
-display(df) #187

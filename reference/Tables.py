@@ -1,4 +1,127 @@
 # Databricks notebook source
+# DBTITLE 1,Implemented
+# MAGIC %sql
+# MAGIC CREATE TABLE @cdmDatabaseSchema.PROVIDER (
+# MAGIC 			provider_id integer NOT NULL,
+# MAGIC 			provider_name varchar(255) NULL,
+# MAGIC 			npi varchar(20) NULL,
+# MAGIC 			dea varchar(20) NULL,
+# MAGIC 			specialty_concept_id integer NULL,
+# MAGIC 			care_site_id integer NULL,
+# MAGIC 			year_of_birth integer NULL,
+# MAGIC 			gender_concept_id integer NULL,
+# MAGIC 			provider_source_value varchar(50) NULL,
+# MAGIC 			specialty_source_value varchar(50) NULL,
+# MAGIC 			specialty_source_concept_id integer NULL,
+# MAGIC 			gender_source_value varchar(50) NULL,
+# MAGIC 			gender_source_concept_id integer NULL );
+# MAGIC
+# MAGIC CREATE TABLE @cdmDatabaseSchema.CONDITION_OCCURRENCE (
+# MAGIC 			condition_occurrence_id integer NOT NULL,
+# MAGIC 			person_id integer NOT NULL,
+# MAGIC 			condition_concept_id integer NOT NULL,
+# MAGIC 			condition_start_date date NOT NULL,
+# MAGIC 			condition_start_datetime datetime NULL,
+# MAGIC 			condition_end_date date NULL,
+# MAGIC 			condition_end_datetime datetime NULL,
+# MAGIC 			condition_type_concept_id integer NOT NULL,
+# MAGIC 			condition_status_concept_id integer NULL,
+# MAGIC 			stop_reason varchar(20) NULL,
+# MAGIC 			provider_id integer NULL,
+# MAGIC 			visit_occurrence_id integer NULL,
+# MAGIC 			visit_detail_id integer NULL,
+# MAGIC 			condition_source_value varchar(50) NULL,
+# MAGIC 			condition_source_concept_id integer NULL,
+# MAGIC 			condition_status_source_value varchar(50) NULL );
+# MAGIC
+# MAGIC CREATE TABLE @cdmDatabaseSchema.DRUG_EXPOSURE (
+# MAGIC 			drug_exposure_id integer NOT NULL,
+# MAGIC 			person_id integer NOT NULL,
+# MAGIC 			drug_concept_id integer NOT NULL,
+# MAGIC 			drug_exposure_start_date date NOT NULL,
+# MAGIC 			drug_exposure_start_datetime datetime NULL,
+# MAGIC 			drug_exposure_end_date date NOT NULL,
+# MAGIC 			drug_exposure_end_datetime datetime NULL,
+# MAGIC 			verbatim_end_date date NULL,
+# MAGIC 			drug_type_concept_id integer NOT NULL,
+# MAGIC 			stop_reason varchar(20) NULL,
+# MAGIC 			refills integer NULL,
+# MAGIC 			quantity float NULL,
+# MAGIC 			days_supply integer NULL,
+# MAGIC 			sig varchar(MAX) NULL,
+# MAGIC 			route_concept_id integer NULL,
+# MAGIC 			lot_number varchar(50) NULL,
+# MAGIC 			provider_id integer NULL,
+# MAGIC 			visit_occurrence_id integer NULL,
+# MAGIC 			visit_detail_id integer NULL,
+# MAGIC 			drug_source_value varchar(50) NULL,
+# MAGIC 			drug_source_concept_id integer NULL,
+# MAGIC 			route_source_value varchar(50) NULL,
+# MAGIC 			dose_unit_source_value varchar(50) NULL );
+# MAGIC
+# MAGIC CREATE TABLE @cdmDatabaseSchema.PROCEDURE_OCCURRENCE (
+# MAGIC 			procedure_occurrence_id integer NOT NULL,
+# MAGIC 			person_id integer NOT NULL,
+# MAGIC 			procedure_concept_id integer NOT NULL,
+# MAGIC 			procedure_date date NOT NULL,
+# MAGIC 			procedure_datetime datetime NULL,
+# MAGIC 			procedure_end_date date NULL,
+# MAGIC 			procedure_end_datetime datetime NULL,
+# MAGIC 			procedure_type_concept_id integer NOT NULL,
+# MAGIC 			modifier_concept_id integer NULL,
+# MAGIC 			quantity integer NULL,
+# MAGIC 			provider_id integer NULL,
+# MAGIC 			visit_occurrence_id integer NULL,
+# MAGIC 			visit_detail_id integer NULL,
+# MAGIC 			procedure_source_value varchar(50) NULL,
+# MAGIC 			procedure_source_concept_id integer NULL,
+# MAGIC 			modifier_source_value varchar(50) NULL );
+# MAGIC
+# MAGIC CREATE TABLE @cdmDatabaseSchema.COST (
+# MAGIC 			cost_id integer NOT NULL,
+# MAGIC 			cost_event_id integer NOT NULL,
+# MAGIC 			cost_domain_id varchar(20) NOT NULL,
+# MAGIC 			cost_type_concept_id integer NOT NULL,
+# MAGIC 			currency_concept_id integer NULL,
+# MAGIC 			total_charge float NULL,
+# MAGIC 			total_cost float NULL,
+# MAGIC 			total_paid float NULL,
+# MAGIC 			paid_by_payer float NULL,
+# MAGIC 			paid_by_patient float NULL,
+# MAGIC 			paid_patient_copay float NULL,
+# MAGIC 			paid_patient_coinsurance float NULL,
+# MAGIC 			paid_patient_deductible float NULL,
+# MAGIC 			paid_by_primary float NULL,
+# MAGIC 			paid_ingredient_cost float NULL,
+# MAGIC 			paid_dispensing_fee float NULL,
+# MAGIC 			payer_plan_period_id integer NULL,
+# MAGIC 			amount_allowed float NULL,
+# MAGIC 			revenue_code_concept_id integer NULL,
+# MAGIC 			revenue_code_source_value varchar(50) NULL,
+# MAGIC 			drg_concept_id integer NULL,
+# MAGIC 			drg_source_value varchar(3) NULL );
+# MAGIC
+# MAGIC CREATE TABLE @cdmDatabaseSchema.VISIT_OCCURRENCE (
+# MAGIC 			visit_occurrence_id integer NOT NULL,
+# MAGIC 			person_id integer NOT NULL,
+# MAGIC 			visit_concept_id integer NOT NULL,
+# MAGIC 			visit_start_date date NOT NULL,
+# MAGIC 			visit_start_datetime datetime NULL,
+# MAGIC 			visit_end_date date NOT NULL,
+# MAGIC 			visit_end_datetime datetime NULL,
+# MAGIC 			visit_type_concept_id Integer NOT NULL,
+# MAGIC 			provider_id integer NULL,
+# MAGIC 			care_site_id integer NULL,
+# MAGIC 			visit_source_value varchar(50) NULL,
+# MAGIC 			visit_source_concept_id integer NULL,
+# MAGIC 			admitted_from_concept_id integer NULL,
+# MAGIC 			admitted_from_source_value varchar(50) NULL,
+# MAGIC 			discharged_to_concept_id integer NULL,
+# MAGIC 			discharged_to_source_value varchar(50) NULL,
+# MAGIC 			preceding_visit_occurrence_id integer NULL );
+
+# COMMAND ----------
+
 # DBTITLE 1,Used
 --sql server CDM DDL Specification for OMOP Common Data Model 5.4
 
@@ -22,73 +145,6 @@ CREATE TABLE @cdmDatabaseSchema.PERSON (
 			race_source_concept_id integer NULL,
 			ethnicity_source_value varchar(50) NULL,
 			ethnicity_source_concept_id integer NULL );
-
---HINT DISTRIBUTE ON KEY (person_id)
-CREATE TABLE @cdmDatabaseSchema.DRUG_EXPOSURE (
-			drug_exposure_id integer NOT NULL,
-			person_id integer NOT NULL,
-			drug_concept_id integer NOT NULL,
-			drug_exposure_start_date date NOT NULL,
-			drug_exposure_start_datetime datetime NULL,
-			drug_exposure_end_date date NOT NULL,
-			drug_exposure_end_datetime datetime NULL,
-			verbatim_end_date date NULL,
-			drug_type_concept_id integer NOT NULL,
-			stop_reason varchar(20) NULL,
-			refills integer NULL,
-			quantity float NULL,
-			days_supply integer NULL,
-			sig varchar(MAX) NULL,
-			route_concept_id integer NULL,
-			lot_number varchar(50) NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
-			drug_source_value varchar(50) NULL,
-			drug_source_concept_id integer NULL,
-			route_source_value varchar(50) NULL,
-			dose_unit_source_value varchar(50) NULL );
-
---HINT DISTRIBUTE ON RANDOM
-CREATE TABLE @cdmDatabaseSchema.PROVIDER (
-			provider_id integer NOT NULL,
-			provider_name varchar(255) NULL,
-			npi varchar(20) NULL,
-			dea varchar(20) NULL,
-			specialty_concept_id integer NULL,
-			care_site_id integer NULL,
-			year_of_birth integer NULL,
-			gender_concept_id integer NULL,
-			provider_source_value varchar(50) NULL,
-			specialty_source_value varchar(50) NULL,
-			specialty_source_concept_id integer NULL,
-			gender_source_value varchar(50) NULL,
-			gender_source_concept_id integer NULL );
-
---HINT DISTRIBUTE ON RANDOM
-CREATE TABLE @cdmDatabaseSchema.COST (
-			cost_id integer NOT NULL,
-			cost_event_id integer NOT NULL,
-			cost_domain_id varchar(20) NOT NULL,
-			cost_type_concept_id integer NOT NULL,
-			currency_concept_id integer NULL,
-			total_charge float NULL,
-			total_cost float NULL,
-			total_paid float NULL,
-			paid_by_payer float NULL,
-			paid_by_patient float NULL,
-			paid_patient_copay float NULL,
-			paid_patient_coinsurance float NULL,
-			paid_patient_deductible float NULL,
-			paid_by_primary float NULL,
-			paid_ingredient_cost float NULL,
-			paid_dispensing_fee float NULL,
-			payer_plan_period_id integer NULL,
-			amount_allowed float NULL,
-			revenue_code_concept_id integer NULL,
-			revenue_code_source_value varchar(50) NULL,
-			drg_concept_id integer NULL,
-			drg_source_value varchar(3) NULL );
 
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.PAYER_PLAN_PERIOD (
@@ -126,64 +182,6 @@ CREATE TABLE @cdmDatabaseSchema.CARE_SITE (
 			location_id integer NULL,
 			care_site_source_value varchar(50) NULL,
 			place_of_service_source_value varchar(50) NULL );
-            
---HINT DISTRIBUTE ON KEY (person_id)
-CREATE TABLE @cdmDatabaseSchema.VISIT_OCCURRENCE (
-			visit_occurrence_id integer NOT NULL,
-			person_id integer NOT NULL,
-			visit_concept_id integer NOT NULL,
-			visit_start_date date NOT NULL,
-			visit_start_datetime datetime NULL,
-			visit_end_date date NOT NULL,
-			visit_end_datetime datetime NULL,
-			visit_type_concept_id Integer NOT NULL,
-			provider_id integer NULL,
-			care_site_id integer NULL,
-			visit_source_value varchar(50) NULL,
-			visit_source_concept_id integer NULL,
-			admitted_from_concept_id integer NULL,
-			admitted_from_source_value varchar(50) NULL,
-			discharged_to_concept_id integer NULL,
-			discharged_to_source_value varchar(50) NULL,
-			preceding_visit_occurrence_id integer NULL );
-
---HINT DISTRIBUTE ON KEY (person_id)
-CREATE TABLE @cdmDatabaseSchema.CONDITION_OCCURRENCE (
-			condition_occurrence_id integer NOT NULL,
-			person_id integer NOT NULL,
-			condition_concept_id integer NOT NULL,
-			condition_start_date date NOT NULL,
-			condition_start_datetime datetime NULL,
-			condition_end_date date NULL,
-			condition_end_datetime datetime NULL,
-			condition_type_concept_id integer NOT NULL,
-			condition_status_concept_id integer NULL,
-			stop_reason varchar(20) NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
-			condition_source_value varchar(50) NULL,
-			condition_source_concept_id integer NULL,
-			condition_status_source_value varchar(50) NULL );
-
---HINT DISTRIBUTE ON KEY (person_id)
-CREATE TABLE @cdmDatabaseSchema.PROCEDURE_OCCURRENCE (
-			procedure_occurrence_id integer NOT NULL,
-			person_id integer NOT NULL,
-			procedure_concept_id integer NOT NULL,
-			procedure_date date NOT NULL,
-			procedure_datetime datetime NULL,
-			procedure_end_date date NULL,
-			procedure_end_datetime datetime NULL,
-			procedure_type_concept_id integer NOT NULL,
-			modifier_concept_id integer NULL,
-			quantity integer NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
-			procedure_source_value varchar(50) NULL,
-			procedure_source_concept_id integer NULL,
-			modifier_source_value varchar(50) NULL );
 
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.MEASUREMENT (
