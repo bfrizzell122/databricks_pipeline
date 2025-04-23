@@ -12,7 +12,7 @@
 # MAGIC     - Problems -> root="2.16.840.1.113883.10.20.22.2.5.1
 # MAGIC
 # MAGIC # Improvements
-# MAGIC 1. In a brief search for Python libraries to parse CCDA XML documents, I did not find any that were production-grade. The ones I found were no longer supported or still in development. I assume that there are libraries out there can could make parsing easier and more reliable, but the time constraints of this project did not allow me to find them. With that said, future improvements would include utilizing a more robust parsing frameworks and becoming more familiar with CCDA XML document structure in order to reliably capture all available data points.
+# MAGIC 1. In a brief search for Python libraries to parse CCDA XML documents, I did not find any that were production-grade. The ones I found were no longer supported or still in development. I assume that there are libraries available that could make parsing easier and more reliable, but the time constraints of this project did not allow me to find them. With that said, future improvements would include utilizing a more robust parsing framework and becoming more familiar with CCDA XML document structure in order to reliably capture all available data points.
 # MAGIC 2. Apply for data quality checks based on CCDA XML field value expectations, if possible.
 # MAGIC 3. When writing tables, I'd prefer to do incremental updates. If the source data doesn't change, I would do append only updates using checkpoints and writeStream. If the source data could change, then a MERGE statement would be more appropriate.
 

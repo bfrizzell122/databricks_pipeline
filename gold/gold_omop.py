@@ -5,11 +5,12 @@
 # MAGIC 2. Structure this data to feed into a Common Data Model format for consumption in a Data Warehouse / Lakehouse with a focus on FHIR/HL7.
 # MAGIC
 # MAGIC # Assumptions
-# MAGIC 1. 
+# MAGIC 1. Proper mapping of incoming data ponits is not absolutely essential for this project. This project is more to show how I would build a data pipeline and not how familiar I am with modeling healthcare data.
 # MAGIC
 # MAGIC # Improvements
 # MAGIC 1. Create a detailed mapping document for values from source files to OMOP CDM.
 # MAGIC 2. Abstract unique ID creation as a function for reproducibility.
+# MAGIC 3. When writing tables, I'd prefer to do incremental updates. If the source data doesn't change, I would do append only updates using checkpoints and writeStream. If the source data could change, then a MERGE statement would be more appropriate.
 
 # COMMAND ----------
 

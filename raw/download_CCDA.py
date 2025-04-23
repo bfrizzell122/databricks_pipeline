@@ -3,19 +3,19 @@
 # MAGIC # Requirements
 # MAGIC 1. Download the clinical documents to your local machine. <br/>
 # MAGIC     - This program was built with expediency in mind as there was a limited time available to download these files prior to expiration.
-# MAGIC     - I also had not yet setup the AWS/Databricks environment.
+# MAGIC     - I also had not yet set up the AWS/Databricks environment.
 # MAGIC     - For portability and reliability, I tried to use standard Python libraries.
-# MAGIC     - For expediency and simplicity, I also used mature and widely-supported Python libraries.
+# MAGIC     - For expediency and simplicity, I also used mature and widely supported Python libraries.
 # MAGIC
 # MAGIC #Assumptions
-# MAGIC 1. This program will only be run locally on a single CSV file so these values are hard-coded into the program.
+# MAGIC 1. This program will only be run locally on a single CSV file, so these values are hard-coded into the program.
 # MAGIC     - This can easily be modified to run in the cloud by changing the file path and pointing it to an S3 bucket.
-# MAGIC 2. CCDA files are small and won't require streaming downloads.
-# MAGIC 3. When supporting a Common Data Model like OMOP, the data model is patient-centered rather than event-driven. This led me to organize the files by patient ID first, rather by a more standard partioning model like date.
+# MAGIC 2. CCDA files are small and won't require streaming/chunking downloads.
+# MAGIC 3. When supporting a Common Data Model like OMOP, the data model is patient-centered rather than event-driven. This led me to organize the files by patient ID first, rather by a more standard partitioning model like date.
 # MAGIC
 # MAGIC # Improvements
-# MAGIC 1. If the CCDA files to download would continue to be identified within a CSV file at a regular cadence (daily, weekly, etc.), the simplest option would be to use Databricks COPY INTO. This provides idempotency and can be scheduled via Workflows. COPY INTO would identify new CSV "driver" files, and then execute the download function to download all CCDA files via the URLs contained within the CSV file. Because this is a heavy i/o operation, I would implement threading to execute the function and download the files, including rate-limiting features if necessary. I would also validate the downloads against the CSV driver file to ensure each download was successful.
-# MAGIC 2. If the CCDA files would be directly pushed to an S3 bucket or other cloud storage by an external data provider without the use of the CSV driver file, then Spark Structured Streaming with Auto Loader could be use to process the files incrementally and idempotently. By default, this process uses "directory listing" mode which scans all files, compares them to metadata in the checkpoint location, and only processes new files. However, this could be time-consuming for extremely large volumes of files. In that case, I would implement File Notification Mode with AWS SQS which allows Auto Loader to know exactly which files are new without scanning the directory. Depending on the downstream requirements (whether data warehouse updates are needed near real-time or less frequent) you could schedule a continuous job or batch job for processing.
+# MAGIC 1. If the CCDA files to download would continue to be identified within a CSV file at a regular cadence (daily, weekly, etc.), the simplest option would be to use Databricks COPY INTO. This provides idempotency and can be scheduled via Workflows. COPY INTO would identify new CSV "driver" files and then execute the download function to download all CCDA files via the URLs contained within the CSV file. Because this is a heavy i/o operation, I would implement threading to execute the function and download the files, including rate-limiting features if necessary. I would also validate the downloads against the CSV driver file to ensure each download was successful.
+# MAGIC 2. If the CCDA files are directly pushed to an S3 bucket or other cloud storage by an external data provider without the use of the CSV driver file, then Spark Structured Streaming with Auto Loader could be used to process the files incrementally and idempotently. By default, this process uses "directory listing" mode which scans all files, compares them to metadata in the checkpoint location, and only processes new files. However, this could be time-consuming for extremely large volumes of files. In that case, I would implement File Notification Mode with AWS SQS which allows Auto Loader to know exactly which files are new without scanning the directory. Depending on the downstream requirements (whether data warehouse updates are needed near real-time or less frequently) you could schedule a continuous job or batch job for processing.
 
 # COMMAND ----------
 

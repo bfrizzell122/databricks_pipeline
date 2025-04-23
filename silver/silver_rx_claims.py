@@ -8,7 +8,7 @@
 # MAGIC
 # MAGIC # Improvements
 # MAGIC 1. Use a schema/data contract file to standardize columns/values dynamically.
-# MAGIC 2. partitionBy
+# MAGIC 2. When writing tables, I'd prefer to do incremental updates. If the source data doesn't change, I would do append only updates using checkpoints and writeStream. If the source data could change, then a MERGE statement would be more appropriate.
 
 # COMMAND ----------
 
@@ -114,7 +114,7 @@ df_rx_claims = spark.sql(f"""
 
     from {catalog}.{db_bronze}.{table}
     order by MemberID, ClaimID, SequenceNumber
-""")
+""").distinct()
 
 # display(df_rx_claims)
 

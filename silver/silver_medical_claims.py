@@ -4,10 +4,11 @@
 # MAGIC 1. Structure this data to feed into a Common Data Model format for consumption in a Data Warehouse / Lakehouse with a focus on FHIR/HL7
 # MAGIC
 # MAGIC # Assumptions
-# MAGIC 1. Universe of values present in CSV files are the only values available.
+# MAGIC 1. Universe of values present in CSV files are the only expected values.
 # MAGIC
 # MAGIC # Improvements
 # MAGIC 1. Use a schema/data contract file to standardize columns/values dynamically.
+# MAGIC 2. When writing tables, I'd prefer to do incremental updates. If the source data doesn't change, I would do append only updates using checkpoints and writeStream. If the source data could change, then a MERGE statement would be more appropriate.
 
 # COMMAND ----------
 
@@ -170,7 +171,7 @@ df_medical_claims = spark.sql(f"""
         , try_cast(part as int) as part
         
     from {catalog}.{db_bronze}.{table}
-""")
+""").distinct()
 
 df_medical_claims.createOrReplaceTempView("medical_claims")
 
@@ -238,7 +239,7 @@ df_medical_claims_px = spark.sql(f"""
         , * 
     from cteFormat
     order by medical_claim_id, Procedure_Num
-""")
+""").distinct()
 
 # display(df_medical_claims_px)
 
@@ -310,7 +311,7 @@ df_medical_claims_dx = spark.sql(f"""
         , *
     from cteUnion
 
-""").sort("medical_claim_id", "Diagnosis_Num")
+""").distinct()
 
 # display(df_medical_claims_dx)
 

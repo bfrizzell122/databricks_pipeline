@@ -11,13 +11,11 @@
 # MAGIC 3. CCDA XML files will be the only XML files in the target folder.
 # MAGIC
 # MAGIC # Improvements
-# MAGIC 1. In a production environmentm, there are several approaches that can mitigate any performance issues related to larger CCDA XML files. Options 1 & 2 would be preferred for streaming CCDA documents when we cannot retain the physical file. Option 3 is better when we can retain all the files but requires parsing for every read which adds complexity and performance implications.
+# MAGIC 1. In a production environment, there are several approaches that can mitigate any performance issues related to larger CCDA XML files. Options 1 & 2 would be preferred for streaming CCDA documents when we cannot retain the physical file. Option 3 is better when we can retain all the files but requires reading/parsing for every read which adds complexity and performance implications.
 # MAGIC     1. Storing the XML as binary to save space and could also improve reads.
 # MAGIC     2. Chunking XML data into fixed size columns.
 # MAGIC     3. Storing the file path in the table and reading the data at run-time.
-# MAGIC 2. .option("maxFilesPerTrigger", max_files_per_trigger) and batch processing
-# MAGIC 3. partitionBy
-# MAGIC 4. watermarks
+# MAGIC 2. For larger volumes of files to be processed per job run, I would process them in small batches using the maxFilesPerTrigger Spark option.
 
 # COMMAND ----------
 
