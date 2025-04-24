@@ -3,7 +3,7 @@ This repo contains all the necessary components to rebuild this pipeline in Data
 
 # Setup
 ## AWS S3
-1. Create a new bucket named 'millimandatalake'. You can use an existing bucket, but you will have to modify the `bucket_name` variable in 3 files: `bronze/bronze_ccda`, `bronze/bronze_claims`, and `bronze/bronze_rx`.
+1. Create a new bucket named 'millimandatalake'. You can use an existing bucket, but you will have to modify the `bucket_name` variable in 4 files: `bronze/bronze_init`, `bronze/bronze_ccda`, `bronze/bronze_claims`, and `bronze/bronze_rx`.
 2. Create the following folder structure in the S3 bucket.
 
 #### S3 File Structure:
