@@ -76,7 +76,7 @@ def parse_ccda(xml_content):
     # Define namespaces
     namespaces = {'hl7': 'urn:hl7-org:v3'}
     
-    # Data Quality Checks
+    # Null Checks
     null_check_get = lambda x, y: x.get(y) if x is not None else None
     null_check_text = lambda x: x.text if x is not None else None
     null_check_int = lambda x: int(x.text) if x is not None else None
@@ -399,12 +399,14 @@ parse_ccda_udf = udf(lambda xml: parse_ccda(xml),
                     ]))
 
 
-df_ccda_docs = spark.table(f"{catalog}.{db_bronze}.{table}")
+df_ccda_docs = (spark.table(f"{catalog}.{db_bronze}.{table}")).join(spark.table(f"{catalog}.{db_silver}.ccda_docs_patient"), on="document_id", how="left_anti") ###NEW
+
+display(df_ccda_docs)
 
 df_ccda_parsed = (df_ccda_docs
     .withColumn("parsed", parse_ccda_udf(col("xml_string")))
     .select("patient_id", "document_id", "parsed.*")
-)
+)     
 
 df_ccda_docs_problem = (df_ccda_parsed
     .withColumn("problem", explode(col("problems")))
