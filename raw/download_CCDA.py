@@ -11,6 +11,7 @@
 # MAGIC 1. This program will only be run locally on a single CSV file, so these values are hard-coded into the program.
 # MAGIC     - This can easily be modified to run in the cloud by changing the file path and pointing it to an S3 bucket.
 # MAGIC 2. CCDA files are small and won't require streaming/chunking downloads.
+# MAGIC 3. test
 # MAGIC
 # MAGIC # Improvements
 # MAGIC 1. If the CCDA files to download would continue to be identified within a CSV file at a regular cadence (daily, weekly, etc.), the simplest option would be to use Databricks COPY INTO. This provides idempotency and can be scheduled via Workflows. COPY INTO would identify new CSV "driver" files and then execute the download function to download all CCDA files via the URLs contained within the CSV file. Because this is a heavy i/o operation, I would implement threading to execute the function and download the files, including rate-limiting features if necessary. I would also validate the downloads against the CSV driver file to ensure each download was successful.
